@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>個別訪談 現場速查卡</title>
+<style>
+  :root{
+    color-scheme:light dark;
+    --bg:#F7F0E3; --card:#FFFDF7; --card2:#F1E8D6;
+    --ink:#3B2F25; --ink-soft:#7C6A57; --line:#E6D8C2;
+    --spine:#C26A41; --spine-soft:#F4E5D4; --spine-ink:#A24E29;
+    --avoid:#BD5A2C; --avoid-bg:#F8E7D6; --avoid-line:#EAC9A9; --avoid-ink:#8F4220;
+    --do:#6E8E4A; --do-bg:#EBF0DC; --do-line:#CFDBAE; --do-ink:#4C6A2C;
+    --anchor-bg:#B5663E; --anchor-ink:#FFF6EC; --anchor-lab:#F3D9C3;
+    --on-accent:#FFF8EF; --hold:#A2937E; --hold-bg:#F0E8D9; --hold-line:#DDCEB6;
+    --max:660px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#241C15; --card:#322A21; --card2:#2B241B;
+      --ink:#EFE5D4; --ink-soft:#B7A88F; --line:#453A2D;
+      --spine:#D17C4F; --spine-soft:#352A1F; --spine-ink:#E3A074;
+      --avoid:#CF7A45; --avoid-bg:#3A2616; --avoid-line:#5E3D22; --avoid-ink:#ECC4A0;
+      --do:#9DBA6E; --do-bg:#28301B; --do-line:#475334; --do-ink:#C6DBA2;
+      --anchor-bg:#824C2C; --anchor-ink:#FBEFE0; --anchor-lab:#E8C2A2;
+      --on-accent:#FFF8EF; --hold:#9C8E78; --hold-bg:#2D261D; --hold-line:#43392C;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+    color:var(--ink);line-height:1.72;font-size:16px;-webkit-text-size-adjust:100%;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 18px 64px;}
+
+  header{max-width:var(--max);margin:0 auto;padding:22px 18px 8px;}
+  .kicker{font-size:12px;letter-spacing:.18em;color:var(--spine-ink);font-weight:700;}
+  h1{font-size:23px;font-weight:800;margin:6px 0 4px;}
+  .howto{font-size:13.5px;color:var(--ink-soft);background:var(--spine-soft);
+    border-left:3px solid var(--spine);padding:10px 12px;border-radius:0 7px 7px 0;margin:8px 0 0;}
+  .howto b{color:var(--spine-ink);}
+
+  .cat{margin:18px 0 0;}
+  .cat h2{font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);
+    margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line);}
+  .row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:12px 13px;margin-bottom:8px;cursor:pointer;transition:.12s;width:100%;
+    text-align:left;color:var(--ink);font-size:15px;font-weight:600;line-height:1.4;}
+  .row:hover{border-color:var(--spine);}
+  .row:focus-visible{outline:2px solid var(--spine);outline-offset:2px;}
+  .row .t{flex:1;}
+  .pill{flex:none;font-size:10.5px;font-weight:800;letter-spacing:.03em;padding:2px 8px;border-radius:20px;line-height:1.5;}
+  .pill.fen{background:var(--spine-soft);color:var(--spine-ink);}
+  .pill.step{background:var(--do-bg);color:var(--do-ink);}
+  .pill.stat{background:var(--hold-bg);color:var(--hold);}
+
+  .card{display:none;}
+  .card.on{display:block;}
+  .index.off{display:none;}
+  .back{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 0 8px;
+    display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .back button{font-size:14px;font-weight:700;color:var(--spine-ink);background:none;border:none;
+    cursor:pointer;padding:4px 0;}
+  .ctitle{font-size:20px;font-weight:800;margin:2px 0 4px;}
+  .ctag{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;
+    background:var(--spine-soft);color:var(--spine-ink);margin-bottom:12px;}
+  .scene{font-size:15.5px;color:var(--ink);background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:12px 13px;margin-bottom:14px;}
+  .scene b{color:var(--spine-ink);}
+
+  .avoid,.do{border-radius:10px;padding:11px 13px;margin:9px 0;font-size:14.5px;line-height:1.62;}
+  .avoid{background:var(--avoid-bg);border:1px solid var(--avoid-line);}
+  .do{background:var(--do-bg);border:1px solid var(--do-line);}
+  .lbl{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--on-accent);
+    padding:2px 9px;border-radius:5px;margin-right:7px;vertical-align:1px;}
+  .avoid .lbl{background:var(--avoid);}
+  .do .lbl{background:var(--do);}
+
+  .anchor{background:var(--anchor-bg);border-radius:11px;padding:14px 15px;margin:14px 0 4px;}
+  .anchor .l{font-size:11px;letter-spacing:.14em;color:var(--anchor-lab);font-weight:700;}
+  .anchor .s{font-size:16px;font-weight:700;color:var(--anchor-ink);margin-top:5px;}
+  .anchor .draft{font-size:11px;color:var(--anchor-lab);opacity:.8;margin-top:6px;}
+
+  .step-q{margin:14px 0 0;}
+  .step-q .qq{font-size:14.5px;font-weight:700;margin-bottom:7px;}
+  .step-q .qn{display:inline-block;font-size:11px;font-weight:800;color:var(--spine-ink);
+    background:var(--spine-soft);border-radius:20px;padding:1px 8px;margin-right:7px;}
+  .opts{display:flex;flex-direction:column;gap:7px;}
+  .opt{font-size:14px;line-height:1.45;text-align:left;background:var(--card2);border:1px solid var(--line);
+    border-radius:9px;padding:10px 12px;cursor:pointer;color:var(--ink);transition:.12s;}
+  .opt:focus-visible{outline:2px solid var(--spine);outline-offset:2px;}
+  .opt[aria-pressed="true"]{background:var(--spine);color:var(--on-accent);border-color:var(--spine);}
+  .step2{display:none;margin-top:14px;padding-top:8px;border-top:1px dashed var(--line);}
+  .step2.show{display:block;}
+  .res{display:none;border-radius:10px;padding:12px 13px;margin-top:14px;font-size:14.5px;line-height:1.62;}
+  .res.show{display:block;}
+  .res .head{font-weight:800;display:block;margin-bottom:4px;}
+  .res.r-safe{background:var(--avoid-bg);border:1px solid var(--avoid-line);color:var(--avoid-ink);}
+  .res.r-do{background:var(--do-bg);border:1px solid var(--do-line);color:var(--do-ink);}
+  .res.r-mix{background:var(--hold-bg);border:1px solid var(--hold-line);color:var(--ink-soft);}
+  .guard{font-size:12.5px;color:var(--ink-soft);background:var(--card2);border:1px solid var(--line);
+    border-radius:8px;padding:8px 11px;margin-top:14px;}
+
+  /* warning banner (身心障礙) */
+  .warnbar{background:var(--avoid-bg);border:1px solid var(--avoid-line);color:var(--avoid-ink);
+    border-radius:10px;padding:11px 13px;margin-bottom:14px;font-size:13.5px;font-weight:600;line-height:1.55;}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 6px;}
+  .chip{font-size:13.5px;background:var(--card2);border:1px solid var(--line);border-radius:20px;
+    padding:7px 12px;cursor:pointer;color:var(--ink);transition:.12s;}
+  .chip[aria-pressed="true"]{background:var(--do);color:var(--on-accent);border-color:var(--do);}
+
+  /* step accordion (親子會面) */
+  .acc{border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden;background:var(--card);}
+  .acc>button{width:100%;text-align:left;background:none;border:none;cursor:pointer;color:var(--ink);
+    font-size:14.5px;font-weight:700;padding:12px 13px;display:flex;align-items:center;gap:10px;}
+  .acc .sn{flex:none;font-size:11px;font-weight:800;color:var(--spine-ink);background:var(--spine-soft);
+    border-radius:20px;padding:1px 9px;}
+  .acc .body{display:none;padding:0 13px 13px;font-size:14px;line-height:1.62;color:var(--ink-soft);}
+  .acc.open .body{display:block;}
+  .acc .body b{color:var(--ink);}
+
+  footer{max-width:var(--max);margin:0 auto;padding:18px;font-size:11.5px;color:var(--hold);
+    border-top:1px solid var(--line);line-height:1.6;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">個別訪談</div>
+  <h1>現場速查卡</h1>
+  <p class="howto"><b>現場卡住的時候查。</b>找到情境 → 別這樣 / 試這樣 / 一句帶走。有些卡會帶你一步步分辨——它幫你找方向，不替你下判定。</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= INDEX ================= -->
+  <div class="index" id="index">
+
+    <div class="cat">
+      <h2>認知與自我</h2>
+      <button class="row" onclick="openCard('ziyuan')"><span class="t">孩子說「我自願」、維護加害人</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('kaixin')"><span class="t">看起來沒事、甚至開心談那段關係</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('zibei')"><span class="t">自我貶低「我就爛、反正沒差」</span><span class="pill stat">靜態</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>情緒與激動</h2>
+      <button class="row" onclick="openCard('baozou')"><span class="t">情緒爆走　·　分辨來源</span><span class="pill fen">分辨</span></button>
+      <button class="row" onclick="openCard('chenmo')"><span class="t">沉默不講話　·　分辨類型</span><span class="pill fen">分辨</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>界線與試探</h2>
+      <button class="row" onclick="openCard('jiexian')"><span class="t">踩線、討好、拿你跟別的社工比　·　分辨他要什麼</span><span class="pill fen">分辨</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>揭露與保密的壓力</h2>
+      <button class="row" onclick="openCard('bipo')"><span class="t">第一次就被逼問到底</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('baolu')"><span class="t">過度暴露、講一堆細節</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('baomi')"><span class="t">「你會跟我爸媽說嗎」</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('zhishi')"><span class="t">制式、排練過的回答　·　分辨</span><span class="pill fen">分辨</span></button>
+      <button class="row" onclick="openCard('shuohuang')"><span class="t">說謊、前後不一　·　分辨來源</span><span class="pill fen">分辨</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>辨識狀態並調整</h2>
+      <button class="row" onclick="openCard('zhangai')"><span class="t">身心障礙、理解落差　·　警訊與調整</span><span class="pill fen">勾選</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>家庭與多方</h2>
+      <button class="row" onclick="openCard('zaichang')"><span class="t">家長或重要他人在場干擾</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('huimian')"><span class="t">親子會面吵起來／促進溝通　·　步驟</span><span class="pill step">步驟</span></button>
+    </div>
+
+    <div class="cat">
+      <h2>現場與你自己</h2>
+      <button class="row" onclick="openCard('peizhen')"><span class="t">陪偵現場爛、時間被擠</span><span class="pill stat">靜態</span></button>
+      <button class="row" onclick="openCard('ziji')"><span class="t">你自己的反應　·　分辨被勾動的是什麼</span><span class="pill fen">分辨</span></button>
+    </div>
+
+  </div>
+
+  <!-- ===== 我自願 ===== -->
+  <div class="card" id="c-ziyuan">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">孩子說「我自願」、維護加害人</div>
+    <span class="ctag">認知與自我　·　靜態</span>
+    <div class="scene"><b>情境：</b>孩子說「是我自己要的」「我自願的」，替加害人講話，覺得你在破壞他的關係。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>跟他爭「這不是自願／你是被害人」。他不接受，關係當場斷。用救援者姿態（「我是來救你的」）更糟——孩子會反過來說你不懂他、騙他。</div>
+    <div class="do"><span class="lbl">試這樣</span>不從「受害」切入。承認那段對他是真的，從生長史、處境、他想要的東西進去（手冊：無論他認不認為自願，都可以回顧生長史）。「不問意願皆為被害人」是法律定位，不是開場白。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">別跟他爭自不自願，從他的處境進去。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 看起來沒事 ===== -->
+  <div class="card" id="c-kaixin">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">看起來沒事、甚至開心</div>
+    <span class="ctag">認知與自我　·　靜態</span>
+    <div class="scene"><b>情境：</b>談那段關係時，孩子看起來沒事，甚至開心、懷念。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>把「他看起來沒事」當成沒受傷、不嚴重，評估就放鬆了。</div>
+    <div class="do"><span class="lbl">試這樣</span>那份正向情感是真的——性剝削可能填補了真實的依附空缺（依賴替代）。它是傷害的一種樣子，不是傷害不存在的證明。同時握住：「這感覺對你是真的」＋「這裡面有傷害」。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">他開心，不代表沒事。創傷不一定哭著來。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 自我貶低 ===== -->
+  <div class="card" id="c-zibei">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">自我貶低「我就爛」</div>
+    <span class="ctag">認知與自我　·　靜態</span>
+    <div class="scene"><b>情境：</b>孩子說「反正我就爛」「我這種人」「沒差啦」。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>急著反駁「你才不爛」「你很好」。空話的保證他不信，還顯得你沒聽懂。</div>
+    <div class="do"><span class="lbl">試這樣</span>這是自我認知的缺損在說話，不是事實。先接住那個位置（「你好像覺得自己不值得」），再慢慢一起看這想法哪裡來的。要修的是自我認知，不是當下吵贏這句。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">別急著說他好，先聽懂他為什麼覺得自己不好。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 情緒爆走 (分辨) ===== -->
+  <div class="card" id="c-baozou">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">情緒爆走　·　分辨來源</div>
+    <span class="ctag">情緒與激動　·　分辨</span>
+    <div class="scene"><b>情境：</b>孩子突然情緒很大、激動、衝撞。同樣是爆走，來源不同、回應完全不同——先別急著壓，先分辨。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">步驟 1</span>有沒有用藥或生理訊號？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="b1" onclick="bz1(this,'drug')">有——抽離、反應遲緩、近期在用、狀態怪</button>
+        <button class="opt" aria-pressed="false" data-g="b1" onclick="bz1(this,'no')">沒有，或已經排除</button>
+      </div>
+    </div>
+    <div class="res r-safe" id="bz-drug"><span class="head">偏「用藥後遺症／生理」</span>別當情感隔離或抗拒處理——那是化學的，不是他在跟你對抗。先顧用藥與生理安全，必要時醫療先行；情緒工作等狀態穩了再說。</div>
+    <div class="step2" id="bz-step2">
+      <div class="step-q">
+        <div class="qq"><span class="qn">步驟 2</span>這個激動比較像？</div>
+        <div class="opts">
+          <button class="opt" aria-pressed="false" data-g="b2" onclick="bz2(this,'flood')">沒有語言、純粹滿出來、講不出在氣什麼</button>
+          <button class="opt" aria-pressed="false" data-g="b2" onclick="bz2(this,'power')">有方向——在爭自主、頂規則、家裡覺得他叛逆</button>
+          <button class="opt" aria-pressed="false" data-g="b2" onclick="bz2(this,'both')">兩個都有</button>
+        </div>
+      </div>
+      <div class="res r-do" id="bz-flood"><span class="head">偏「沒被教過情緒」（技能缺口）</span>不是不願，是不會。別處理成抗拒。當下幫他把情緒命名出來——「你現在是氣，還是怕？」——慢慢建詞彙。給語言，比要他冷靜有用。</div>
+      <div class="res r-do" id="bz-power"><span class="head">偏「遲來的自我與主導權」</span>這不是單純叛逆——他在補小時候沒長到的自我。別站到管控那邊壓他。先承認他要的是自主，再談怎麼拿回來才不傷自己。家裡覺得他叛逆，你可以是那個看見他在長的人。</div>
+      <div class="res r-mix" id="bz-both"><span class="head">看起來交織</span>先接住情緒本身，不急著歸因。等情緒下來，再回到「他在爭什麼」。安全與關係，先於分析。</div>
+    </div>
+    <div class="guard">這是幫你找方向，不是判定。最後一步你下。</div>
+  </div>
+
+  <!-- ===== 沉默 (分辨) ===== -->
+  <div class="card" id="c-chenmo">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">沉默不講話　·　分辨類型</div>
+    <span class="ctag">情緒與激動　·　分辨</span>
+    <div class="scene"><b>情境：</b>孩子不講話。沉默有好幾種，回應不一樣——先拿訪談一開始的基線來對。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">步驟 1</span>對照基線，是哪一種沉默？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="c1" onclick="cm1(this,'topic')">談著談著、碰到某個主題才關，離開那主題能回來</button>
+        <button class="opt" aria-pressed="false" data-g="c1" onclick="cm1(this,'all')">一進來就靜、整場都靜</button>
+      </div>
+    </div>
+    <div class="res r-do" id="cm-topic"><span class="head">偏「主題觸發關門」</span>不是整體抗拒——是碰到那個主題才關。別追那個主題，先離開它、回到他能談的，把門留著。記下是哪個主題關的門——那通常就是核心。</div>
+    <div class="step2" id="cm-step2">
+      <div class="step-q">
+        <div class="qq"><span class="qn">步驟 2</span>整場靜的話，比較像？</div>
+        <div class="opts">
+          <button class="opt" aria-pressed="false" data-g="c2" onclick="cm2(this,'resist')">針對你、針對這個場合——對別人別場合不一定這樣</button>
+          <button class="opt" aria-pressed="false" data-g="c2" onclick="cm2(this,'withdraw')">對什麼都提不起來、整體退縮、情緒淡</button>
+        </div>
+      </div>
+      <div class="res r-do" id="cm-resist"><span class="head">偏「對你／這個場合的抗拒」</span>先別取得內容，先處理關係與安全感——他為什麼此刻不信任這個場合。換場、換節奏、把主導權還他一點，常比問下去有用。</div>
+      <div class="res r-mix" id="cm-withdraw"><span class="head">偏「整體退縮／適應」</span>比較像適應或情緒淡漠，不是針對你。這時要的是陪伴與結構，不是訪談。取不到資訊，不是你失敗。</div>
+    </div>
+    <div class="guard">這是幫你找方向，不是判定。最後一步你下。</div>
+  </div>
+
+  <!-- ===== 界線試探 (分辨) ===== -->
+  <div class="card" id="c-jiexian">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">踩線、討好、拿你比較　·　分辨他要什麼</div>
+    <span class="ctag">界線與試探　·　分辨</span>
+    <div class="scene"><b>情境：</b>孩子在踩你的界線、討好你、或拿你跟別的社工比。同樣的行為，底下要的東西不同。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">先分辨</span>這比較像？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="j1" onclick="jx(this,'test')">在測試你——故意越界、看你會不會變、一不一致</button>
+        <button class="opt" aria-pressed="false" data-g="j1" onclick="jx(this,'split')">在把你跟別人比、想要特例、製造你們之間的縫</button>
+        <button class="opt" aria-pressed="false" data-g="j1" onclick="jx(this,'attach')">黏著你、想要更特別的關係、像在找一個專屬的人</button>
+      </div>
+    </div>
+    <div class="res r-do" id="jx-test"><span class="head">偏「試探一致性」</span>他在確認你安不安全、會不會像別人一樣讓他失望。界線守穩、但溫和——一致本身就是回應。別因為他鬧就變，也別因為他乖就鬆。</div>
+    <div class="res r-do" id="jx-split"><span class="head">偏「分化」</span>別被拉進「我比較懂你」的位置，也別說別的社工不對。把界線講成團隊一致的，不是你個人的好惡。不競爭、不被挑撥。</div>
+    <div class="res r-do" id="jx-attach"><span class="head">偏「依附需求」</span>這不是麻煩，是依賴替代跑到你身上了。別硬推開（等於再一次被丟下），也別接成特殊關係。穩定、可預期、有界線的在場，就是他要的那種安全。</div>
+    <div class="guard">這是幫你找方向，不是判定。最後一步你下。</div>
+  </div>
+
+  <!-- ===== 第一次被逼問 ===== -->
+  <div class="card" id="c-bipo">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">第一次就被逼問到底</div>
+    <span class="ctag">揭露與保密　·　靜態</span>
+    <div class="scene"><b>情境：</b>報告要交、筆錄在催，你被逼著想在第一次就問到全部。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>為了趕進度第一次就逼到底。孩子會關門，或給你一個配合的版本（不是真的）。</div>
+    <div class="do"><span class="lbl">試這樣</span>完整揭露在信任之後，常常進安置才出來。減述的精神是減少重複陳述、訊前訪視先準備——力氣放在「創造一次能好好說的條件」，不是這次問完。問不到，記錄下來，不是失敗。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">第一次的目標不是問到，是讓他願意有下一次。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 過度暴露 ===== -->
+  <div class="card" id="c-baolu">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">過度暴露、講一堆細節</div>
+    <span class="ctag">揭露與保密　·　靜態</span>
+    <div class="scene"><b>情境：</b>孩子反而主動講很多、很細，停不下來。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>趁機追問、挖更多——反正他願意講。</div>
+    <div class="do"><span class="lbl">試這樣</span>過度暴露常是創傷的樣子，不是配合度高。你的工作是接住、穩住節奏，不是趁機採集。適時幫他踩煞車（「我們先停一下，你還好嗎」），別讓他被自己的揭露淹沒。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">他講不停的時候，你的工作是接住，不是挖。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 保密界線 ===== -->
+  <div class="card" id="c-baomi">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">「你會跟我爸媽說嗎」</div>
+    <span class="ctag">揭露與保密　·　靜態</span>
+    <div class="scene"><b>情境：</b>孩子問「你會不會跟我爸媽說」「這個你會講出去嗎」。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>為了讓他講，承諾「我不會跟任何人說」。你做不到，被拆穿關係就毀了。</div>
+    <div class="do"><span class="lbl">試這樣</span>誠實講界線——有些事為了保護他，你必須讓特定的人知道；但你會讓他知道你要跟誰說、為什麼。可預期，比假保密更能建立信任。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">不要承諾你守不住的祕密。誠實的界線比討好的謊安全。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 制式回答 (分辨) ===== -->
+  <div class="card" id="c-zhishi">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">制式、排練過的回答　·　分辨</div>
+    <span class="ctag">揭露與保密　·　分辨</span>
+    <div class="scene"><b>情境：</b>孩子的回答很順、很制式，像講過很多次、或像在給你要的答案。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">先分辨</span>比較像？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="z1" onclick="zs(this,'show')">順到沒有情緒、像背稿，一問細節就鬆動</button>
+        <button class="opt" aria-pressed="false" data-g="z1" onclick="zs(this,'real')">有遲疑、有情緒、卡頓，但在自己的經驗裡</button>
+      </div>
+    </div>
+    <div class="res r-mix" id="zs-show"><span class="head">偏「表演／配合」</span>可能被問太多次，或在給大人想聽的。別當成已經處理好。先放掉內容，回到關係和安全——真的東西要從信任裡長出來（表面順應）。</div>
+    <div class="res r-do" id="zs-real"><span class="head">偏「真實」</span>雖然不流暢，但他在自己的經驗裡。別因為他講不清楚就懷疑可信度——卡頓和情緒，往往才是真的記號。</div>
+    <div class="guard">這是幫你找方向，不是判定。最後一步你下。</div>
+  </div>
+
+  <!-- ===== 說謊前後不一 (分辨) ===== -->
+  <div class="card" id="c-shuohuang">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">說謊、前後不一　·　分辨來源</div>
+    <span class="ctag">揭露與保密　·　分辨</span>
+    <div class="scene"><b>情境：</b>孩子說的前後對不上、或你覺得他在說謊。先別急著抓謊——不一致幾乎都不是單純說謊。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">先分辨</span>不一致比較像？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="s1" onclick="sh(this,'mem')">時間、順序拼不起來，細節飄</button>
+        <button class="opt" aria-pressed="false" data-g="s1" onclick="sh(this,'protect')">講到某人就改口、護著誰</button>
+        <button class="opt" aria-pressed="false" data-g="s1" onclick="sh(this,'shame')">越講越退、像怕被看不起</button>
+        <button class="opt" aria-pressed="false" data-g="s1" onclick="sh(this,'cog')">聽你的問題有困難、被你的問法帶著走</button>
+      </div>
+    </div>
+    <div class="res r-do" id="sh-mem"><span class="head">偏「創傷記憶」</span>創傷記憶本來就破碎、非線性，對不上不等於說謊。別用「你上次不是這樣說」逼他，那只會讓他更亂。</div>
+    <div class="res r-do" id="sh-protect"><span class="head">偏「保護」</span>他在護人——可能護加害人（情感連結），也可能護自己（怕後果）。先處理那個害怕，內容才會鬆。</div>
+    <div class="res r-do" id="sh-shame"><span class="head">偏「羞愧」</span>不一致是羞愧在擋。別追，先讓他知道這不是他的錯，門才開得了。</div>
+    <div class="res r-safe" id="sh-cog"><span class="head">偏「認知落差／易受暗示」</span>先確認他聽懂你在問什麼。別用引導性問句——這群孩子容易順著你的問法給答案，你問出來的，可能是你自己放進去的。</div>
+    <div class="guard">這是幫你找方向，不是判定。最後一步你下。</div>
+  </div>
+
+  <!-- ===== 身心障礙 (勾選) ===== -->
+  <div class="card" id="c-zhangai">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">身心障礙、理解落差　·　警訊與調整</div>
+    <span class="ctag">辨識狀態並調整　·　勾選</span>
+    <div class="warnbar">這不是診斷工具，是提醒你提高警覺、調整訪談方式。真的有疑慮，轉專業評估——別自己判定。</div>
+    <div class="scene"><b>情境：</b>孩子年紀約13上下，但理解、反應好像跟不上。先別當不配合或裝傻。</div>
+    <div class="step-q">
+      <div class="qq">勾你看到的訊號：</div>
+      <div class="chips">
+        <button class="chip" aria-pressed="false" onclick="togChip(this)">聽不太懂抽象、需要很具體</button>
+        <button class="chip" aria-pressed="false" onclick="togChip(this)">反應慢、要很久才接話</button>
+        <button class="chip" aria-pressed="false" onclick="togChip(this)">容易順著你的問句改答案</button>
+        <button class="chip" aria-pressed="false" onclick="togChip(this)">同樣的事要解釋很多次</button>
+        <button class="chip" aria-pressed="false" onclick="togChip(this)">在校、生活自理明顯落後同齡</button>
+      </div>
+    </div>
+    <div class="do" style="margin-top:14px"><span class="lbl">這樣調整</span>放慢、一次一件、用具體的話和例子；<b>避免引導性問句</b>（他很容易給你要的答案，連到減述的可信度問題）；重要的事換句話確認他真的懂。勾到的訊號越多，越要往「轉專業評估」靠，別把理解落差當成不配合。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">他不是裝傻，可能是真的跟不上。放慢，別用問句餵答案。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 家長在場 ===== -->
+  <div class="card" id="c-zaichang">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">家長或重要他人在場干擾</div>
+    <span class="ctag">家庭與多方　·　靜態</span>
+    <div class="scene"><b>情境：</b>訪談時家長或其他人在場，插話、代答、或讓孩子不敢講。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>當著對方繼續，或硬把人趕走製造對立。</div>
+    <div class="do"><span class="lbl">試這樣</span>先看在場的人是支持還是壓力。需要的話用程序性理由分開（「我想單獨跟他聊一下，等等再一起談」），把分開講成常規、不是針對。孩子在對方面前說的，可能不是全部。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">先看在場的人是助力還是阻力，再決定要不要分開談。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 親子會面 (步驟) ===== -->
+  <div class="card" id="c-huimian">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">親子會面吵起來／促進溝通</div>
+    <span class="ctag">家庭與多方　·　步驟</span>
+    <div class="scene"><b>情境：</b>安置期間的親子會面，吵起來、冷場、或需要你引導溝通。你的角色是促進，不是裁判。</div>
+    <div class="acc"><button onclick="togAcc(this)"><span class="sn">會面前</span>先做預備</button>
+      <div class="body">跟雙方各自對過期待和底線，講好這次的目標、和不談的雷區。<b>預備做足，現場才穩。</b></div></div>
+    <div class="acc"><button onclick="togAcc(this)"><span class="sn">升溫時</span>先降溫，不講理</button>
+      <div class="body"><b>情緒先於內容。</b>把話翻譯過去（「媽媽的意思是不是…」），讓彼此聽到，而不是評判誰對誰錯。</div></div>
+    <div class="acc"><button onclick="togAcc(this)"><span class="sn">何時喊停</span>保護優先</button>
+      <div class="body">變成指責、翻舊帳、或孩子明顯退縮被壓，就喊停。<b>喊停不是失敗，是保護。</b>寧可短而安全。</div></div>
+    <div class="acc"><button onclick="togAcc(this)"><span class="sn">會面後</span>分開 debrief</button>
+      <div class="body">分別接住孩子和家長，問感受、做修補。<b>會面的價值在事後怎麼消化，不只在當下。</b></div></div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">你是促進不是裁判。情緒先於內容，安全先於把話講完。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 陪偵現場 ===== -->
+  <div class="card" id="c-peizhen">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">陪偵現場爛、時間被擠</div>
+    <span class="ctag">現場與你自己　·　靜態</span>
+    <div class="scene"><b>情境：</b>陪偵現場混雜、大宗破獲人多、時間被壓縮，根本問不到完整資訊。</div>
+    <div class="avoid"><span class="lbl">別這樣</span>在爛條件硬要問到完整，或因為問不到就草率下判斷。</div>
+    <div class="do"><span class="lbl">試這樣</span>接受現場限制——這不是你的失敗（手冊明講）。24小時取不到的，留待72小時再確認。把限制如實記錄當脈絡，不要假裝你有完整資訊。別忘提審權利告知（24小時內書面）。</div>
+    <div class="anchor"><div class="l">記住這句</div><div class="s">條件爛是事實，不是你的錯。記下來，留到下一關。</div><div class="draft">草稿，換成你的話</div></div>
+  </div>
+
+  <!-- ===== 你自己的反應 (分辨) ===== -->
+  <div class="card" id="c-ziji">
+    <div class="back"><button onclick="backToIndex()">← 回列表</button></div>
+    <div class="ctitle">你自己的反應　·　分辨被勾動的是什麼</div>
+    <span class="ctag">現場與你自己　·　分辨</span>
+    <div class="scene"><b>情境：</b>你自己有反應了——很正常，但帶著它工作會走樣。先認出來是哪一種。</div>
+    <div class="step-q">
+      <div class="qq"><span class="qn">先分辨</span>你現在被勾動的比較像？</div>
+      <div class="opts">
+        <button class="opt" aria-pressed="false" data-g="y1" onclick="yj(this,'save')">很想救他、想替他決定、想趕快讓他脫離</button>
+        <button class="opt" aria-pressed="false" data-g="y1" onclick="yj(this,'disgust')">對加害人或那段關係感到厭惡、評價</button>
+        <button class="opt" aria-pressed="false" data-g="y1" onclick="yj(this,'self')">心裡某個東西被戳到、想起自己的什麼</button>
+        <button class="opt" aria-pressed="false" data-g="y1" onclick="yj(this,'numb')">麻了、抽離、不太想碰這個案</button>
+      </div>
+    </div>
+    <div class="res r-do" id="yj-save"><span class="head">救援衝動</span>救援姿態最傷關係——它否定了孩子的選擇和步調。退半步，陪他用他的速度，不是你的。</div>
+    <div class="res r-do" id="yj-disgust"><span class="head">厭惡／評價</span>你的評價孩子讀得到，他會關門。把評價留到督導室，訪談裡只有他。</div>
+    <div class="res r-mix" id="yj-self"><span class="head">被勾起自己</span>這是訊號不是丟臉。先標記它、別在現場處理，找督導談。帶著沒整理的自己工作，容易投射。</div>
+    <div class="res r-mix" id="yj-numb"><span class="head">麻木／耗竭</span>可能是替代性創傷在累積。這不是你不夠專業，是你需要被照顧——認真當回事，找支持。</div>
+    <div class="guard">照顧自己不是多餘，是這份工作做得久的前提。</div>
+  </div>
+
+  <footer>
+    單檔、不連網、不留存任何資料，所有操作只在本機。<br>
+    記住這句皆為草稿，換成你自己的話。依據：兒少性剝削防制新法工作手冊（衛福部）＋實務框架。<br>
+    雙主題：淺色模式為明亮版，深色模式為暖色版。
+  </footer>
+
+</div>
+
+<script>
+  function openCard(id){
+    document.getElementById('index').classList.add('off');
+    var cards=document.querySelectorAll('.card');
+    for(var i=0;i<cards.length;i++) cards[i].classList.remove('on');
+    document.getElementById('c-'+id).classList.add('on');
+    window.scrollTo({top:0,behavior:'auto'});
+  }
+  function backToIndex(){
+    document.getElementById('index').classList.remove('off');
+    var cards=document.querySelectorAll('.card');
+    for(var i=0;i<cards.length;i++) cards[i].classList.remove('on');
+    window.scrollTo({top:0,behavior:'auto'});
+  }
+  function press(btn){
+    var g=btn.getAttribute('data-g');
+    var grp=document.querySelectorAll('.opt[data-g="'+g+'"]');
+    for(var i=0;i<grp.length;i++) grp[i].setAttribute('aria-pressed','false');
+    btn.setAttribute('aria-pressed','true');
+  }
+  function hide(){ for(var i=0;i<arguments.length;i++){var e=document.getElementById(arguments[i]); if(e) e.classList.remove('show');} }
+  function show(id){ var e=document.getElementById(id); if(e) e.classList.add('show'); }
+
+  function bz1(b,v){ press(b); if(v==='drug'){ show('bz-drug'); hide('bz-step2','bz-flood','bz-power','bz-both'); } else { hide('bz-drug'); show('bz-step2'); } }
+  function bz2(b,v){ press(b); hide('bz-flood','bz-power','bz-both'); if(v==='flood')show('bz-flood'); else if(v==='power')show('bz-power'); else show('bz-both'); }
+  function cm1(b,v){ press(b); if(v==='topic'){ show('cm-topic'); hide('cm-step2','cm-resist','cm-withdraw'); } else { hide('cm-topic'); show('cm-step2'); } }
+  function cm2(b,v){ press(b); hide('cm-resist','cm-withdraw'); if(v==='resist')show('cm-resist'); else show('cm-withdraw'); }
+  function jx(b,v){ press(b); hide('jx-test','jx-split','jx-attach'); show('jx-'+v); }
+  function zs(b,v){ press(b); hide('zs-show','zs-real'); show('zs-'+v); }
+  function sh(b,v){ press(b); hide('sh-mem','sh-protect','sh-shame','sh-cog'); show('sh-'+v); }
+  function yj(b,v){ press(b); hide('yj-save','yj-disgust','yj-self','yj-numb'); show('yj-'+v); }
+
+  function togChip(b){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true'); }
+  function togAcc(b){ b.parentElement.classList.toggle('open'); }
+</script>
+</body>
+</html>
